@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000'; // FastAPI backend URL
+const API_BASE_URL = 'https://googlecloud2025backend-production.up.railway.app'; // FastAPI backend URL
 
 export interface UploadResponse {
   doc_id: string;
@@ -45,6 +45,9 @@ export interface ChatMessage {
 }
 
 class ApiService {
+  private lastApiCallTime: number = 0;
+  private readonly MIN_API_INTERVAL = 1000; // 1 second minimum between API calls
+
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -76,6 +79,19 @@ class ApiService {
       console.error(`API request failed for ${endpoint}:`, error);
       throw error;
     }
+  }
+
+  private async ensureApiInterval(): Promise<void> {
+    const now = Date.now();
+    const timeSinceLastCall = now - this.lastApiCallTime;
+    
+    if (timeSinceLastCall < this.MIN_API_INTERVAL) {
+      const waitTime = this.MIN_API_INTERVAL - timeSinceLastCall;
+      console.log(`Waiting ${waitTime}ms before next API call to avoid conflicts`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    
+    this.lastApiCallTime = Date.now();
   }
 
   async uploadPdf(file: File): Promise<UploadResponse> {
@@ -117,6 +133,7 @@ class ApiService {
   }
 
   async summarize(docId: string, displayName?: string): Promise<SummarizeResponse> {
+    await this.ensureApiInterval();
     return this.request<SummarizeResponse>('/summarize', {
       method: 'POST',
       body: JSON.stringify({
@@ -127,12 +144,32 @@ class ApiService {
   }
 
   async getRisks(docId: string): Promise<RisksResponse> {
+    await this.ensureApiInterval();
     return this.request<RisksResponse>('/risks', {
       method: 'POST',
       body: JSON.stringify({
         doc_id: docId
       }),
     });
+  }
+
+  async processDocumentSequentially(docId: string, displayName?: string): Promise<{
+    summary: SummarizeResponse;
+    risks: RisksResponse;
+  }> {
+    console.log('Starting sequential document processing...');
+    
+    // First, get the summary
+    console.log('Step 1: Getting document summary...');
+    const summary = await this.summarize(docId, displayName);
+    console.log('Summary completed:', summary);
+    
+    // Then, get the risks
+    console.log('Step 2: Analyzing document risks...');
+    const risks = await this.getRisks(docId);
+    console.log('Risks analysis completed:', risks);
+    
+    return { summary, risks };
   }
 
   async chat(docId: string, messages: ChatMessage[], sessionId?: string): Promise<ChatResponse> {

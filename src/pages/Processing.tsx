@@ -62,11 +62,12 @@ const Processing = () => {
       setError(null);
 
       try {
-        // Call the summarize endpoint
-        const summaryResponse = await apiService.summarize(docId);
+        // Call both endpoints sequentially to avoid conflicts
+        const { summary: summaryResponse, risks: risksResponse } = await apiService.processDocumentSequentially(docId);
         
-        // Store the summary in localStorage for the dashboard
+        // Store both results in localStorage for the dashboard
         localStorage.setItem('documentSummary', JSON.stringify(summaryResponse));
+        localStorage.setItem('documentRisks', JSON.stringify(risksResponse));
         
         // Simulate processing steps with real progress
         const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);

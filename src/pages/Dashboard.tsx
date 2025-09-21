@@ -10,7 +10,9 @@ import {
   ChevronRight,
   Download,
   ExternalLink,
-  Loader2
+  Loader2,
+  CheckCircle2,
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,19 +38,19 @@ const Dashboard = () => {
       }
 
       try {
-        // Try to get summary from localStorage first (from processing)
+        // Try to get data from localStorage first (from processing)
         const storedSummary = localStorage.getItem('documentSummary');
-        if (storedSummary) {
+        const storedRisks = localStorage.getItem('documentRisks');
+        
+        if (storedSummary && storedRisks) {
           setDocumentSummary(JSON.parse(storedSummary));
+          setRisks(JSON.parse(storedRisks));
         } else {
-          // If not in localStorage, fetch from API
-          const summaryResponse = await apiService.summarize(docId);
+          // If not in localStorage, fetch from API sequentially
+          const { summary: summaryResponse, risks: risksResponse } = await apiService.processDocumentSequentially(docId);
           setDocumentSummary(summaryResponse);
+          setRisks(risksResponse);
         }
-
-        // Fetch risks
-        const risksResponse = await apiService.getRisks(docId);
-        setRisks(risksResponse);
       } catch (error) {
         console.error('Failed to load document data:', error);
         setError(error instanceof Error ? error.message : 'Failed to load document data.');
@@ -137,6 +139,38 @@ const Dashboard = () => {
     }
   };
 
+  // Helper function to format summary into point-wise format
+  const formatSummaryPoints = (summary: string): string[] => {
+    if (!summary) return [];
+    
+    // Split by common sentence endings and filter out empty strings
+    const sentences = summary
+      .split(/[.!?]+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 10); // Filter out very short fragments
+    
+    // If we have multiple sentences, return them as points
+    if (sentences.length > 1) {
+      return sentences.map(sentence => 
+        sentence.endsWith('.') ? sentence : sentence + '.'
+      );
+    }
+    
+    // If it's a single long sentence, try to split by commas or semicolons
+    if (summary.includes(',') || summary.includes(';')) {
+      return summary
+        .split(/[,;]+/)
+        .map(s => s.trim())
+        .filter(s => s.length > 10)
+        .map(sentence => 
+          sentence.endsWith('.') ? sentence : sentence + '.'
+        );
+    }
+    
+    // If all else fails, return the original as a single point
+    return [summary];
+  };
+
   return (
     <div className="min-h-screen bg-background neural-bg p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -172,12 +206,50 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <h3 className="text-xl font-rajdhani font-semibold mb-3">
+                  <h3 className="text-xl font-rajdhani font-semibold mb-4 text-neon-cyan">
                     {localStorage.getItem('currentDocName') || 'Legal Document'}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {documentSummary?.summary || 'No summary available.'}
-                  </p>
+                  
+                  {/* Point-wise Summary Display */}
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-rajdhani font-semibold text-neon-blue mb-3">
+                      DOCUMENT SUMMARY
+                    </h4>
+                    {documentSummary?.summary ? (
+                      <div className="space-y-3">
+                        {formatSummaryPoints(documentSummary.summary).map((point, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group flex items-start gap-4 p-5 bg-gradient-to-r from-cyber-navy/20 to-cyber-navy/10 rounded-lg border-l-4 border-neon-cyan hover:from-cyber-navy/30 hover:to-cyber-navy/20 transition-all duration-300 hover:shadow-lg hover:shadow-neon-cyan/10"
+                          >
+                            <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-neon-cyan/30 to-neon-blue/30 rounded-full flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
+                              <CheckCircle2 className="w-4 h-4 text-neon-cyan" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                                {point}
+                              </p>
+                              <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <ArrowRight className="w-3 h-3 text-neon-cyan" />
+                                <span className="text-xs text-neon-cyan font-rajdhani">
+                                  Key Point {index + 1}
+                                </span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <div className="text-muted-foreground">
+                          No summary available.
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Processing Info */}
