@@ -1,0 +1,395 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LegalLens AI Modern Vibrant Design System */
+@layer base {
+  :root {
+    /* Modern Vibrant Color Palette - Enhanced */
+    --primary-blue: 210 85% 50%; /* More saturated vibrant blue */
+    --neutral-gray: 220 15% 45%; /* Richer gray with more saturation */
+    --light-bg: 210 50% 98%; /* Subtle blue tint background */
+    --accent-gold: 35 90% 60%; /* Brighter, more saturated gold */
+    
+    /* Extended Color Palette - Enhanced */
+    --primary-light: 210 85% 65%;
+    --primary-dark: 210 85% 40%;
+    --neutral-light: 220 15% 80%;
+    --neutral-dark: 220 20% 25%;
+    --accent-light: 35 90% 75%;
+    --accent-dark: 35 90% 50%;
+    --success-green: 145 70% 50%;
+    --warning-orange: 25 100% 60%;
+    --danger-red: 0 90% 60%;
+    --teal-accent: 175 75% 45%;
+    --purple-accent: 265 75% 60%;
+    
+    /* Glass Effect Colors */
+    --glass-bg: 210 50% 50% / 0.2;
+    --glass-border: 210 50% 70% / 0.1;
+    --glass-highlight: 210 50% 90% / 0.1;
+    
+    /* Additional Vibrant Colors */
+    --coral: 16 100% 66%;      /* #FF6E4A */
+    --magenta: 328 85% 56%;    /* #E53E90 */
+    --lime: 73 76% 59%;        /* #C5E14B */
+    --sky-blue: 199 92% 56%;   /* #30B4E6 */
+    --lavender: 267 68% 78%;   /* #C39CFF */
+    --mint: 160 84% 39%;       /* #19B86E */
+    --salmon: 14 100% 78%;     /* #FF9E7A */
+    --indigo: 245 58% 51%;     /* #5C67E0 */
+    --amber: 45 100% 51%;      /* #FFBF00 */
+    --turquoise: 174 72% 56%;  /* #40DFCF */
+    
+    /* Privacy Box Green Colors */
+    --privacy-green: 142 76% 36%;      /* #1E9D55 - Main privacy green */
+    --privacy-green-light: 142 70% 90%; /* #E3F9ED - Light background */
+    --privacy-green-dark: 142 80% 25%;  /* #0E7A3D - Dark accent */
+    
+    /* Base System Colors */
+    --background: var(--light-bg);
+    --foreground: var(--neutral-dark);
+    
+    --card: 0 0% 100%;
+    --card-foreground: var(--neutral-dark);
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--neutral-dark);
+    
+    --primary: var(--primary-blue);
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: var(--teal-accent);
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 210 30% 96%;
+    --muted-foreground: var(--neutral-gray);
+    
+    --accent: var(--accent-gold);
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: var(--danger-red);
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 210 30% 90%;
+    --input: 210 30% 95%;
+    --ring: var(--primary-blue);
+    
+    --radius: 0.5rem;
+    
+    /* Accent Colors */
+    --neural-node: var(--primary-blue);
+    --neural-connection: var(--primary-light);
+    --neural-pulse: var(--accent-gold);
+    
+    /* Subtle Effects */
+    --holo-glow: 0 0 15px hsl(var(--primary-blue) / 0.3);
+    --holo-border: 0 0 10px hsl(var(--primary-light) / 0.2);
+    --holo-shadow: 0 0 20px hsl(var(--accent-gold) / 0.1);
+    
+    /* Risk Level Colors */
+    --risk-low: var(--success-green);
+    --risk-medium: var(--warning-orange);
+    --risk-high: var(--danger-red);
+    --risk-critical: var(--neutral-dark);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+  }
+}
+
+@layer utilities {
+  /* Modern Design Elements */
+  .holo-border {
+    position: relative;
+    border: 1px solid hsla(var(--border), 0.5);
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .holo-border:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .holo-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      hsla(var(--primary-blue), 0.8) 0%,
+      hsla(var(--teal-accent), 0.8) 50%,
+      hsla(var(--purple-accent), 0.8) 100%
+    );
+  }
+  
+  /* Color Utility Classes */
+  .text-coral { color: hsl(var(--coral)); }
+  .text-magenta { color: hsl(var(--magenta)); }
+  .text-lime { color: hsl(var(--lime)); }
+  .text-sky-blue { color: hsl(var(--sky-blue)); }
+  .text-lavender { color: hsl(var(--lavender)); }
+  .text-mint { color: hsl(var(--mint)); }
+  .text-salmon { color: hsl(var(--salmon)); }
+  .text-indigo { color: hsl(var(--indigo)); }
+  .text-amber { color: hsl(var(--amber)); }
+  .text-turquoise { color: hsl(var(--turquoise)); }
+  
+  .bg-coral { background-color: hsl(var(--coral)); }
+  .bg-magenta { background-color: hsl(var(--magenta)); }
+  .bg-lime { background-color: hsl(var(--lime)); }
+  .bg-sky-blue { background-color: hsl(var(--sky-blue)); }
+  .bg-lavender { background-color: hsl(var(--lavender)); }
+  .bg-mint { background-color: hsl(var(--mint)); }
+  .bg-salmon { background-color: hsl(var(--salmon)); }
+  .bg-indigo { background-color: hsl(var(--indigo)); }
+  .bg-amber { background-color: hsl(var(--amber)); }
+  .bg-turquoise { background-color: hsl(var(--turquoise)); }
+  
+  .border-coral { border-color: hsl(var(--coral)); }
+  .border-magenta { border-color: hsl(var(--magenta)); }
+  .border-lime { border-color: hsl(var(--lime)); }
+  .border-sky-blue { border-color: hsl(var(--sky-blue)); }
+  .border-lavender { border-color: hsl(var(--lavender)); }
+  .border-mint { border-color: hsl(var(--mint)); }
+  .border-salmon { border-color: hsl(var(--salmon)); }
+  .border-indigo { border-color: hsl(var(--indigo)); }
+  .border-amber { border-color: hsl(var(--amber)); }
+  .border-turquoise { border-color: hsl(var(--turquoise)); }
+  
+  /* Vibrant Accent Colors */
+  .neural-node {
+    color: hsl(var(--primary-blue));
+    filter: drop-shadow(0 0 3px hsla(var(--primary-blue), 0.3));
+  }
+
+  .neural-connection {
+    color: hsl(var(--teal-accent));
+  }
+
+  .neural-pulse {
+    color: hsl(var(--purple-accent));
+    filter: drop-shadow(0 0 2px hsla(var(--purple-accent), 0.2));
+  }
+
+  /* Modern Card & Shadow Effects */
+  .holo-glow {
+    box-shadow: 0 8px 25px hsla(var(--primary-blue), 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .holo-glow:hover {
+    box-shadow: 0 12px 30px hsla(var(--primary-blue), 0.25);
+  }
+
+  .holo-shadow {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .holo-shadow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Subtle Pulse Effect */
+  .neural-pulse {
+    animation: neural-pulse 3s ease-in-out infinite;
+    animation-delay: calc(var(--delay, 0) * 1s);
+  }
+
+  /* Modern Text Enhancement */
+  .cyber-glow {
+    color: hsl(var(--primary-blue));
+    font-weight: 600;
+  }
+
+  /* Subtle Scan Effect */
+  .scan-lines {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scan-lines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary-blue) / 0.3), transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  /* Clean Hover Effect */
+  .neon-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .neon-hover:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+
+  /* Subtle Float Animation */
+  .float {
+    animation: float 4s ease-in-out infinite;
+    animation-delay: calc(var(--delay, 0) * 1s);
+  }
+
+  /* Modern Neural Network Background */
+  .neural-bg {
+    background-color: hsl(var(--light-bg));
+    background-image: 
+      radial-gradient(circle at 15% 15%, hsla(var(--primary-blue), 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 85%, hsla(var(--teal-accent), 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, hsla(var(--purple-accent), 0.05) 0%, transparent 60%),
+      linear-gradient(135deg, hsla(var(--primary-light), 0.05) 0%, hsla(var(--accent-light), 0.05) 100%);
+    background-size: 200% 200%;
+    animation: gradient-shift 15s ease infinite;
+  }
+  
+  /* Colorful Gradient Backgrounds */
+  .gradient-blue-purple {
+    background: linear-gradient(135deg, hsl(var(--primary-blue)) 0%, hsl(var(--purple-accent)) 100%);
+  }
+  
+  .gradient-coral-gold {
+    background: linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--accent-gold)) 100%);
+  }
+  
+  .gradient-teal-lime {
+    background: linear-gradient(135deg, hsl(var(--teal-accent)) 0%, hsl(var(--lime)) 100%);
+  }
+  
+  .gradient-magenta-indigo {
+    background: linear-gradient(135deg, hsl(var(--magenta)) 0%, hsl(var(--indigo)) 100%);
+  }
+  
+  .gradient-sky-turquoise {
+    background: linear-gradient(135deg, hsl(var(--sky-blue)) 0%, hsl(var(--turquoise)) 100%);
+  }
+  
+  /* Privacy Notice Box */
+  .privacy-box {
+    background-color: hsl(var(--privacy-green-light));
+    border-left: 4px solid hsl(var(--privacy-green));
+    border-radius: 6px;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .privacy-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--privacy-green)) 0%,
+      hsl(var(--privacy-green-light)) 100%
+    );
+  }
+  
+  .privacy-box h3 {
+    color: hsl(var(--privacy-green-dark));
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .privacy-box h3::before {
+    content: "🔒";
+    margin-right: 0.5rem;
+  }
+  
+  .privacy-box p {
+    color: hsl(var(--neutral-dark));
+    margin-bottom: 0.5rem;
+  }
+  
+  .privacy-box strong {
+    color: hsl(var(--privacy-green-dark));
+    font-weight: 600;
+  }
+}
+
+@keyframes neural-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes scan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes neural-drift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 100px 100px, 150px 150px, 200px 200px;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
