@@ -22,7 +22,7 @@ const Processing = () => {
   const steps = [
     {
       id: 'uploading',
-      title: 'File is being uploaded',
+      title: 'File is being uploaded and analyzed',
       description: 'Securely transferring your document',
       icon: Upload,
       duration: 3000
@@ -61,6 +61,44 @@ const Processing = () => {
       setIsProcessing(true);
       setError(null);
 
+      // Start slow timer that goes to 98%
+      const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);
+      let elapsed = 0;
+      let processingComplete = false;
+
+      const timer = setInterval(() => {
+        elapsed += 75; // Slower increment (was 100)
+        
+        // Calculate progress, but cap at 98% until processing is complete
+        const targetProgress = Math.min((elapsed / totalDuration) * 100, 98);
+        const newProgress = processingComplete ? 100 : targetProgress;
+        
+        setProgress(newProgress);
+
+        // Update current step
+        let stepProgress = 0;
+        let newCurrentStep = 0;
+        
+        for (let i = 0; i < steps.length; i++) {
+          stepProgress += steps[i].duration;
+          if (elapsed <= stepProgress) {
+            newCurrentStep = i;
+            break;
+          }
+        }
+        
+        setCurrentStep(newCurrentStep);
+
+        // Only complete when processing is done AND we've reached 98%
+        if (processingComplete && newProgress >= 100) {
+          clearInterval(timer);
+          setIsProcessing(false);
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1000);
+        }
+      }, 200); // Slower timer interval (was 100)
+
       try {
         // Call both endpoints sequentially to avoid conflicts
         const { summary: summaryResponse, risks: risksResponse } = await apiService.processDocumentSequentially(docId);
@@ -69,44 +107,17 @@ const Processing = () => {
         localStorage.setItem('documentSummary', JSON.stringify(summaryResponse));
         localStorage.setItem('documentRisks', JSON.stringify(risksResponse));
         
-        // Simulate processing steps with real progress
-        const totalDuration = steps.reduce((sum, step) => sum + step.duration, 0);
-        let elapsed = 0;
-
-        const timer = setInterval(() => {
-          elapsed += 100;
-          const newProgress = Math.min((elapsed / totalDuration) * 100, 100);
-          setProgress(newProgress);
-
-          // Update current step
-          let stepProgress = 0;
-          let newCurrentStep = 0;
-          
-          for (let i = 0; i < steps.length; i++) {
-            stepProgress += steps[i].duration;
-            if (elapsed <= stepProgress) {
-              newCurrentStep = i;
-              break;
-            }
-          }
-          
-          setCurrentStep(newCurrentStep);
-
-          if (newProgress >= 100) {
-            clearInterval(timer);
-            setIsProcessing(false);
-            setTimeout(() => {
-              navigate('/dashboard');
-            }, 1000);
-          }
-        }, 100);
-
-        return () => clearInterval(timer);
+        // Mark processing as complete - timer will now go to 100%
+        processingComplete = true;
+        
       } catch (error) {
         console.error('Processing failed:', error);
         setError(error instanceof Error ? error.message : 'Processing failed. Please try again.');
         setIsProcessing(false);
+        clearInterval(timer);
       }
+
+      return () => clearInterval(timer);
     };
 
     processDocument();
@@ -296,7 +307,7 @@ const Processing = () => {
           className="mt-12 text-center"
         >
           <p className="text-sm text-muted-foreground">
-            Average processing time: 15-30 seconds • Your document remains private and ephemeral
+            Average processing time: 2-3 minutes (Initial Prototype) please be patient • Your document remains private and ephemeral
           </p>
         </motion.div>
       </motion.div>
